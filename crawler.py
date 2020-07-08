@@ -27,8 +27,7 @@ class Crawler:
                 EC.presence_of_element_located((by,selector)))
             return
         except Exception as e:
-            print(e)
-            return
+            self.driver.quit()
     def login(self,user,password):
         self.wait_for_element(By.CSS_SELECTOR,'input')
         username_field,password_field = self.driver.find_elements_by_tag_name('input')
