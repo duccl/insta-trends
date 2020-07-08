@@ -10,7 +10,10 @@ class Crawler:
     EXPLORE_URL = "https://www.instagram.com/explore/"
     def __init__(self,url,chromedriver):
         options = webdriver.ChromeOptions()
-        options.add_argument('--incognito')
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--single-process')
+        options.add_argument('--disable-dev-shm-usage')
         self.driver= webdriver.Chrome(chromedriver,options = options)
         self.driver.get(url)
         self.tag_counter = {}
@@ -28,18 +31,13 @@ class Crawler:
             return
     def login(self,user,password):
         self.wait_for_element(By.CSS_SELECTOR,'input')
-        self.log("login")
         username_field,password_field = self.driver.find_elements_by_tag_name('input')
         username_field.send_keys(user)
         password_field.send_keys(password)
-        self.log("login done")
         submit_button = self.driver.find_element_by_css_selector('button[type="submit"]')
         submit_button.click()
-        self.log("submit done")
         self.sleep()
-        self.log("waiting load")
         self.wait_for_element(By.CSS_SELECTOR,f'a[href="/{user}/"]')
-        self.log("waiting load done")
         self.sleep()
 
     def sleep(self,time_in_seconds = 0.5):
@@ -55,42 +53,25 @@ class Crawler:
             self.tag_counter[tag_name] = 1
 
     def access_first_post(self):
-        self.log("waiting post")
         self.wait_for_element(By.CSS_SELECTOR,'a[href*="p"]')
-        self.log("waiting post done")
-        self.log("waiting img")
         self.wait_for_element(By.CSS_SELECTOR,'img[decoding]')
-        self.log("waiting img done")
         self.sleep()
         post = self.driver.find_element_by_css_selector('a[href*="p"]')
-        self.log(post)
         post.click()
-        self.log("post click done")
-        self.log("post wait load")
         self.wait_for_element(By.CSS_SELECTOR,'article')
-        self.log("post wait load done")
         
     def list_tags(self):
-        self.log("list tags wait")
         self.wait_for_element(By.CSS_SELECTOR,"h2 + span")
-        self.log("list tags wait done")
         self.sleep()
         tags_elements = self.driver.find_elements_by_css_selector("h2 + span > a[href*='explore/tags/']")
-        self.log("list tags begin")
         for tag in tags_elements:
             self.update_tag_count(tag.text)
-            self.log("list tag "+tag.text)
 
     def paginate(self):
-        self.log("wait paginator")
         self.wait_for_element(By.CSS_SELECTOR,'a[class*="coreSpriteRightPaginationArrow"]')
-        self.log("wait paginator done")
         right_paginator = self.driver.find_element_by_css_selector('a[class*="coreSpriteRightPaginationArrow"]')
         right_paginator.click()
-        self.log("go paginator")
-        self.log("wait article")
         self.wait_for_element(By.CSS_SELECTOR,'article')
-        self.log("wait article done")
 
     def export_data(self):
         with open('data.json','w') as file:
