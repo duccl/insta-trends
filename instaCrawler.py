@@ -1,5 +1,6 @@
 from crawler import Crawler
 import os
+from s3Uploader import uploadToS3
 
 instaCrawler = Crawler('https://www.instagram.com/',".\\chromedriver.exe")
 instaCrawler.login(os.getenv('USERNAME'),os.getenv('PASSWORD'))
@@ -9,3 +10,4 @@ for i in range(5):
     instaCrawler.list_tags()
     instaCrawler.paginate()
 instaCrawler.export_data()
+uploadToS3()
