@@ -14,7 +14,15 @@ class Crawler:
         options.add_argument('--no-sandbox')
         options.add_argument('--single-process')
         options.add_argument('--disable-dev-shm-usage')
-        self.driver= webdriver.Chrome(chromedriver,options = options)
+        options.add_argument('--enable-logging')
+        options.add_argument('--log-level=0')
+        options.add_argument('--v=99')
+        options.add_argument('--single-process')
+        options.add_argument('--ignore-certificate-errors')
+        options.add_argument(
+            'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.30 Safari/537.36')
+        options.binary_location = os.getcwd() + "/bin/headless-chromium" 
+        self.driver= webdriver.Chrome(executable_path=chromedriver,chrome_options = options)
         self.driver.get(url)
         self.tag_counter = {}
 
