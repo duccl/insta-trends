@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import json
 import time
-
+import os
 class Crawler:
     EXPLORE_URL = "https://www.instagram.com/explore/"
     def __init__(self,url,chromedriver):
